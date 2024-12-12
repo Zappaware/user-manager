@@ -1,0 +1,76 @@
+/* src/components/UserDetails.module.css */
+
+/* Contenedor principal */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #279aff; /* Azul claro */
+    padding: 2rem;
+}
+
+/* Tarjeta de detalles */
+.card {
+    background-color: #ffffff; /* Blanco */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    text-align: left;
+}
+
+.title {
+    text-align: center;
+    color: #1e90ff; /* Azul */
+    margin-bottom: 1rem;
+    font-family: 'Arial', sans-serif;
+}
+
+.detail {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #333;
+}
+
+.detail strong {
+    color: #1e90ff; /* Azul */
+}
+
+.button {
+    margin-top: 1rem;
+    background-color: #1e90ff;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.button:hover {
+    background-color: #4682b4; /* Azul más oscuro */
+}
+
+.error {
+    color: red;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 1.5rem;
+    }
+
+    .detail {
+        font-size: 0.9rem;
+    }
+
+    .button {
+        font-size: 0.9rem;
+    }
+}

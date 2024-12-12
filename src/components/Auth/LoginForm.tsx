@@ -1,7 +1,8 @@
 // src/components/Auth/LoginForm.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, Typography, Paper } from '@mui/material';
+import { Box, TextField, Button, Typography } from '@mui/material';
+import styles from './LoginForm.module.css';
 
 const LoginForm: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -11,22 +12,22 @@ const LoginForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-       if (email === 'admin' && password === 'admin') {
+        if (email === 'admin' && password === 'admin') {
             localStorage.setItem('isAuthenticated', 'true');
             navigate('/home'); // Redirect to HomePage
         } else {
-           setError('Invalid username or password');
+            setError('Invalid username or password');
         }
     };
 
     return (
-        <Paper elevation={3} style={{ padding: '2rem', maxWidth: '400px', margin: '2rem auto' }}>
-            <Typography variant="h5" component="h1" gutterBottom>
-                Login
-            </Typography>
-            {error && <Typography color="error">{error}</Typography>}
-            <form onSubmit={handleSubmit}>
-                <Box mb={2}>
+        <div className={styles.container}>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <Typography variant="h5" component="h1" className={styles.title}>
+                    Login
+                </Typography>
+                {error && <Typography className={styles.error}>{error}</Typography>}
+                <Box className={styles.field}>
                     <TextField
                         fullWidth
                         label="Email"
@@ -34,7 +35,7 @@ const LoginForm: React.FC = () => {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </Box>
-                <Box mb={2}>
+                <Box className={styles.field}>
                     <TextField
                         fullWidth
                         type="password"
@@ -43,11 +44,11 @@ const LoginForm: React.FC = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Box>
-                <Button variant="contained" color="primary" type="submit" fullWidth>
+                <Button className={styles.button} variant="contained" type="submit" fullWidth>
                     Login
                 </Button>
             </form>
-        </Paper>
+        </div>
     );
 };
 

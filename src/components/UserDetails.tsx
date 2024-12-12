@@ -1,8 +1,9 @@
 // src/components/UserDetails.tsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Paper, Typography, Button, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import axios from 'axios';
+import styles from './UserDetails.module.css';
 
 interface User {
     id: number;
@@ -35,34 +36,42 @@ const UserDetails: React.FC = () => {
     }, [id]);
 
     if (loading) {
-        return <CircularProgress />;
+        return (
+            <div className={styles.container}>
+                <CircularProgress />
+            </div>
+        );
     }
 
     if (!user) {
-        return <Typography color="error">User not found</Typography>;
+        return (
+            <div className={styles.container}>
+                <p className={styles.error}>User not found</p>
+            </div>
+        );
     }
 
     return (
-        <Paper elevation={3} style={{ padding: '2rem', maxWidth: '600px', margin: '2rem auto' }}>
-            <Typography variant="h4" component="h2" gutterBottom>
-                {user.name}
-            </Typography>
-            <Typography variant="body1">
-                <strong>Email:</strong> {user.email}
-            </Typography>
-            <Typography variant="body1">
-                <strong>Username:</strong> {user.username}
-            </Typography>
-            <Typography variant="body1">
-                <strong>Phone:</strong> {user.phone}
-            </Typography>
-            <Typography variant="body1">
-                <strong>Website:</strong> {user.website}
-            </Typography>
-            <Button variant="contained" color="secondary" onClick={() => navigate('/home')}>
-                Back to Users
-            </Button>
-        </Paper>
+        <div className={styles.container}>
+            <div className={styles.card}>
+                <h2 className={styles.title}>{user.name}</h2>
+                <p className={styles.detail}>
+                    <strong>Email:</strong> {user.email}
+                </p>
+                <p className={styles.detail}>
+                    <strong>Username:</strong> {user.username}
+                </p>
+                <p className={styles.detail}>
+                    <strong>Phone:</strong> {user.phone}
+                </p>
+                <p className={styles.detail}>
+                    <strong>Website:</strong> {user.website}
+                </p>
+                <button className={styles.button} onClick={() => navigate('/home')}>
+                    Back to Users
+                </button>
+            </div>
+        </div>
     );
 };
 

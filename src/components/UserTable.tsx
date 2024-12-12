@@ -21,6 +21,8 @@ import {
     DialogTitle,
 } from '@mui/material';
 import axios from 'axios';
+import styles from './UserTable.module.css';
+
 
 type User = {
     id: number;
@@ -105,10 +107,11 @@ const UserTable: React.FC = () => {
     if (loading) return <CircularProgress />;
 
     return (
-        <Box>
+        <Box className={styles.container}>
             {/* Campo de búsqueda */}
             <Box display="flex" justifyContent="center" marginBottom="1rem">
                 <TextField
+                    className={styles.searchBar}
                     label="Search by Name or Email"
                     variant="outlined"
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -118,13 +121,17 @@ const UserTable: React.FC = () => {
 
             {/* Botón para agregar un usuario */}
             <Box display="flex" justifyContent="center" marginBottom="1rem">
-                <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>
+                <Button
+                    className={styles.addButton}
+                    variant="contained" color="primary"
+                    onClick={() => setOpenDialog(true)}
+                >
                     Add User
                 </Button>
             </Box>
 
             {/* Tabla de usuarios */}
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className={styles.tableContainer}>
                 <Table>
                     <TableHead>
                         <TableRow>
