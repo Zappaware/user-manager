@@ -1,7 +1,7 @@
-// src/components/Auth/LoginForm.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography } from '@mui/material';
+import { useAuth } from '../../context/AuthContext';
 import styles from './LoginForm.module.css';
 
 const LoginForm: React.FC = () => {
@@ -9,11 +9,12 @@ const LoginForm: React.FC = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (email === 'admin' && password === 'admin') {
-            localStorage.setItem('isAuthenticated', 'true');
+            login();
             navigate('/home'); // Redirect to HomePage
         } else {
             setError('Invalid username or password');
@@ -32,6 +33,7 @@ const LoginForm: React.FC = () => {
                         fullWidth
                         label="Email"
                         variant="outlined"
+                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </Box>
@@ -41,6 +43,7 @@ const LoginForm: React.FC = () => {
                         type="password"
                         label="Password"
                         variant="outlined"
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Box>
