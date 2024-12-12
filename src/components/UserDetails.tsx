@@ -1,7 +1,7 @@
-// src/components/UserDetails.tsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
+import { useAuth } from '../context/AuthContext'; // Import AuthContext
 import axios from 'axios';
 import styles from './UserDetails.module.css';
 
@@ -17,10 +17,16 @@ interface User {
 const UserDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { isAuthenticated } = useAuth(); // Access authentication status
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/'); // Redirect to login if not authenticated
+            return;
+        }
+
         const fetchUser = async () => {
             try {
                 const response = await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`);
@@ -33,7 +39,7 @@ const UserDetails: React.FC = () => {
         };
 
         fetchUser();
-    }, [id]);
+    }, [id, isAuthenticated, navigate]);
 
     if (loading) {
         return (
