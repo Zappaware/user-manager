@@ -1,4 +1,3 @@
-// src/components/UserTable.tsx
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
@@ -23,7 +22,6 @@ import {
 import axios from 'axios';
 import styles from './UserTable.module.css';
 
-
 type User = {
     id: number;
     name: string;
@@ -36,9 +34,9 @@ const UserTable: React.FC = () => {
     const navigate = useNavigate();
     const loading = useSelector((state: RootState) => state.users.loading);
 
-    const [users, setUsers] = useState<User[]>([]); // Estado local para usuarios
-    const [visibleUsers, setVisibleUsers] = useState<User[]>([]); // Usuarios visibles en la tabla
-    const [itemsToShow, setItemsToShow] = useState(5); // Número inicial de usuarios visibles
+    const [users, setUsers] = useState<User[]>([]);
+    const [visibleUsers, setVisibleUsers] = useState<User[]>([]);
+    const [itemsToShow, setItemsToShow] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -50,13 +48,12 @@ const UserTable: React.FC = () => {
         phone: '',
     });
 
-    // Obtener usuarios de la API al montar el componente
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const response = await axios.get('https://jsonplaceholder.typicode.com/users');
                 setUsers(response.data);
-                setVisibleUsers(response.data.slice(0, itemsToShow)); // Inicializa los usuarios visibles
+                setVisibleUsers(response.data.slice(0, itemsToShow));
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
@@ -64,24 +61,21 @@ const UserTable: React.FC = () => {
         fetchUsers();
     }, []);
 
-    // Actualizar usuarios filtrados cuando cambia el término de búsqueda o la lista de usuarios
     useEffect(() => {
         const filtered = users.filter(
             (user) =>
                 user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 user.email.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        // setFilteredUsers(filtered);
-        setVisibleUsers(filtered.slice(0, itemsToShow)); // Ajusta los usuarios visibles al filtrarlos
+        setVisibleUsers(filtered.slice(0, itemsToShow));
     }, [searchTerm, users, itemsToShow]);
 
-    // Manejo del Infinite Scroll
     const handleScroll = () => {
         if (
             window.innerHeight + document.documentElement.scrollTop >=
             document.documentElement.offsetHeight
         ) {
-            setItemsToShow((prev) => prev + 5); // Incrementa el número de usuarios visibles
+            setItemsToShow((prev) => prev + 5);
         }
     };
 
@@ -91,15 +85,15 @@ const UserTable: React.FC = () => {
     }, []);
 
     const handleDelete = (id: number) => {
-        setUsers(users.filter((user) => user.id !== id)); // Elimina localmente
+        setUsers(users.filter((user) => user.id !== id));
     };
 
     const handleAddUser = () => {
         if (newUser.name && newUser.email && newUser.username && newUser.phone) {
             const id = users.length > 0 ? users[users.length - 1].id + 1 : 1;
             const userToAdd: User = { ...newUser, id };
-            setUsers([...users, userToAdd]); // Agregar nuevo usuario
-            setNewUser({ id: 0, name: '', email: '', username: '', phone: '' }); // Resetear formulario
+            setUsers([...users, userToAdd]);
+            setNewUser({ id: 0, name: '', email: '', username: '', phone: '' });
             setOpenDialog(false);
         }
     };
@@ -108,31 +102,28 @@ const UserTable: React.FC = () => {
 
     return (
         <Box className={styles.container}>
-            {/* Campo de búsqueda */}
             <Box display="flex" justifyContent="center" marginBottom="1rem">
                 <TextField
                     className={styles.searchBar}
                     label="Search by Name or Email"
                     variant="outlined"
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: '300px' }}
                 />
             </Box>
 
-            {/* Botón para agregar un usuario */}
             <Box display="flex" justifyContent="center" marginBottom="1rem">
                 <Button
                     className={styles.addButton}
-                    variant="contained" color="primary"
+                    variant="contained"
+                    color="primary"
                     onClick={() => setOpenDialog(true)}
                 >
                     Add User
                 </Button>
             </Box>
 
-            {/* Tabla de usuarios */}
             <TableContainer component={Paper} className={styles.tableContainer}>
-                <Table>
+                <Table className={styles.table}>
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
@@ -144,45 +135,61 @@ const UserTable: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {visibleUsers.length > 0 ? (
-                            visibleUsers.map((user) => (
-                                <TableRow key={user.id}>
-                                    <TableCell>{user.id}</TableCell>
-                                    <TableCell>{user.name}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.username}</TableCell>
-                                    <TableCell>{user.phone}</TableCell>
-                                    <TableCell>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={() => navigate(`/users/${user.id}`)}
-                                        >
-                                            View Details
-                                        </Button>
-                                        <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            onClick={() => handleDelete(user.id)}
-                                            style={{ marginLeft: '10px' }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={6} align="center">
-                                    No users found
+                        {visibleUsers.map((user) => (
+                            <TableRow key={user.id}>
+                                <TableCell>{user.id}</TableCell>
+                                <TableCell>{user.name}</TableCell>
+                                <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.username}</TableCell>
+                                <TableCell>{user.phone}</TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => navigate(`/users/${user.id}`)}
+                                    >
+                                        View Details
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => handleDelete(user.id)}
+                                        style={{ marginLeft: '10px' }}
+                                    >
+                                        Delete
+                                    </Button>
                                 </TableCell>
                             </TableRow>
-                        )}
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
 
-            {/* Dialogo para agregar un nuevo usuario */}
+            <div className={styles.cardsContainer}>
+                {visibleUsers.map((user) => (
+                    <div key={user.id} className={styles.card}>
+                        <h4>{user.name}</h4>
+                        <p><strong>Email:</strong> {user.email}</p>
+                        <p><strong>Username:</strong> {user.username}</p>
+                        <p><strong>Phone:</strong> {user.phone}</p>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigate(`/users/${user.id}`)}
+                        >
+                            View Details
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleDelete(user.id)}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+                ))}
+            </div>
+
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
                 <DialogTitle>Add New User</DialogTitle>
                 <DialogContent>
