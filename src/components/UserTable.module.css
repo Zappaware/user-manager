@@ -82,7 +82,7 @@
     display: none; /* Oculta tarjetas por defecto */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1132px) {
     .tableContainer {
         display: none; /* Oculta la tabla en pantallas pequeñas */
     }
