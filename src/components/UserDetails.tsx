@@ -1,85 +1,66 @@
-import React from 'react';
+// src/components/UserDetails.tsx
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { Box, Typography, Button, Paper } from '@mui/material';
+import { Paper, Typography, Button, CircularProgress } from '@mui/material';
+import axios from 'axios';
 
 interface User {
-    id: string;
+    id: number;
     name: string;
     email: string;
     username: string;
     phone: string;
-    address: {
-        street: string;
-        city: string;
-        zipcode: string;
-    };
-    company: {
-        name: string;
-    };
+    website: string;
 }
 
 const UserDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    // Get user data from Redux state
-    // @ts-expect-error Type 'User | undefined' is not assignable to type 'User'.
-    const user: User = useSelector((state: RootState) =>
-        state.users.data.find((user: User) => user.id === id)
-    );
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`);
+                setUser(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
+    }, [id]);
+
+    if (loading) {
+        return <CircularProgress />;
+    }
 
     if (!user) {
-        return (
-            <Box textAlign="center" marginTop={5}>
-                <Typography variant="h5">User not found</Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate('/')}
-                >
-                    Back to Home
-                </Button>
-            </Box>
-        );
+        return <Typography color="error">User not found</Typography>;
     }
 
     return (
-        <Paper
-            elevation={3}
-            style={{
-                padding: '2rem',
-                margin: '2rem auto',
-                maxWidth: '600px',
-            }}
-        >
-            <Typography variant="h4" gutterBottom>
+        <Paper elevation={3} style={{ padding: '2rem', maxWidth: '600px', margin: '2rem auto' }}>
+            <Typography variant="h4" component="h2" gutterBottom>
                 {user.name}
             </Typography>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body1">
                 <strong>Email:</strong> {user.email}
             </Typography>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body1">
                 <strong>Username:</strong> {user.username}
             </Typography>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body1">
                 <strong>Phone:</strong> {user.phone}
             </Typography>
-            <Typography variant="body1" gutterBottom>
-                <strong>Address:</strong>{' '}
-                {`${user.address.street}, ${user.address.city}, ${user.address.zipcode}`}
+            <Typography variant="body1">
+                <strong>Website:</strong> {user.website}
             </Typography>
-            <Typography variant="body1" gutterBottom>
-                <strong>Company:</strong> {user.company.name}
-            </Typography>
-            <Button
-                variant="contained"
-                color="secondary"
-                style={{ marginTop: '1rem' }}
-                onClick={() => navigate('/')}
-            >
-                Back to Home
+            <Button variant="contained" color="secondary" onClick={() => navigate('/home')}>
+                Back to Users
             </Button>
         </Paper>
     );

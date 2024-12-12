@@ -2,10 +2,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress } from '@mui/material';
 
 const UserTable: React.FC = () => {
-    const { data, loading } = useSelector((state: RootState) => state.users);
+    const users = useSelector((state: RootState) => state.users.data);
+    const navigate = useNavigate();
+    const loading = useSelector((state: RootState) => state.users.loading);
     type User  = {
         id: number;
         name: string;
@@ -21,19 +24,27 @@ const UserTable: React.FC = () => {
             <Table>
                 <TableHead>
                     <TableRow>
+                        <TableCell>ID</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell>Email</TableCell>
-                        <TableCell>Username</TableCell>
-                        <TableCell>Phone</TableCell>
+                        <TableCell>Actions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((user: User) => (
+                    {users.map((user: User) => (
                         <TableRow key={user.id}>
+                            <TableCell>{user.id}</TableCell>
                             <TableCell>{user.name}</TableCell>
                             <TableCell>{user.email}</TableCell>
-                            <TableCell>{user.username}</TableCell>
-                            <TableCell>{user.phone}</TableCell>
+                            <TableCell>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => navigate(`/users/${user.id}`)}
+                                >
+                                    View Details
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
