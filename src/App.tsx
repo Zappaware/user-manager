@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginForm from "./components/Auth/LoginForm.tsx";
 import HomePage from './pages/HomePage';
 import UserPage from './pages/UserPage';
+import './App.css';
 
 const App: React.FC = () => {
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';

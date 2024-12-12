@@ -3,7 +3,8 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../redux/store';
 import { getUsers } from '../redux/userSlice';
 import UserTable from '../components/UserTable';
-import { Typography, Container } from '@mui/material';
+import { Typography } from '@mui/material';
+import styles from './HomePage.module.css';
 
 const HomePage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -14,12 +15,14 @@ const HomePage: React.FC = () => {
     }, [dispatch]);
 
     return (
-        <Container>
-            <Typography variant="h3" gutterBottom>
+        <div className={styles.container}>
+            <Typography className={styles.header} variant="h3" gutterBottom>
                 User Management
             </Typography>
-            <UserTable />
-        </Container>
+            <div className={styles.subContainer}>
+                <UserTable />
+            </div>
+        </div>
     );
 };
 
