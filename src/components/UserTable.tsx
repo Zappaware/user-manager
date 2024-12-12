@@ -35,13 +35,13 @@ const UserTable: React.FC = () => {
     const loading = useSelector((state: RootState) => state.users.loading);
 
     const [users, setUsers] = useState<User[]>([]); // Estado local para usuarios
-    const [filteredUsers, setFilteredUsers] = useState<User[]>([]); // Estado para usuarios filtrados
+    const [visibleUsers, setVisibleUsers] = useState<User[]>([]); // Usuarios visibles en la tabla
+    const [itemsToShow, setItemsToShow] = useState(5); // Número inicial de usuarios visibles
     const [searchTerm, setSearchTerm] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
 
-    // Estado para el nuevo usuario
     const [newUser, setNewUser] = useState<User>({
-        id: 0, // Esto se sobrescribirá al agregar
+        id: 0,
         name: '',
         email: '',
         username: '',
@@ -53,8 +53,8 @@ const UserTable: React.FC = () => {
         const fetchUsers = async () => {
             try {
                 const response = await axios.get('https://jsonplaceholder.typicode.com/users');
-                setUsers(response.data); // Guardar usuarios en el estado local
-                setFilteredUsers(response.data); // Inicializar usuarios filtrados
+                setUsers(response.data);
+                setVisibleUsers(response.data.slice(0, itemsToShow)); // Inicializa los usuarios visibles
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
@@ -64,25 +64,40 @@ const UserTable: React.FC = () => {
 
     // Actualizar usuarios filtrados cuando cambia el término de búsqueda o la lista de usuarios
     useEffect(() => {
-        setFilteredUsers(
-            users.filter(
-                (user) =>
-                    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-            )
+        const filtered = users.filter(
+            (user) =>
+                user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchTerm.toLowerCase())
         );
-    }, [searchTerm, users]);
+        // setFilteredUsers(filtered);
+        setVisibleUsers(filtered.slice(0, itemsToShow)); // Ajusta los usuarios visibles al filtrarlos
+    }, [searchTerm, users, itemsToShow]);
+
+    // Manejo del Infinite Scroll
+    const handleScroll = () => {
+        if (
+            window.innerHeight + document.documentElement.scrollTop >=
+            document.documentElement.offsetHeight
+        ) {
+            setItemsToShow((prev) => prev + 5); // Incrementa el número de usuarios visibles
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleDelete = (id: number) => {
-        setUsers(users.filter((user) => user.id !== id)); // Eliminar usuario localmente
+        setUsers(users.filter((user) => user.id !== id)); // Elimina localmente
     };
 
     const handleAddUser = () => {
         if (newUser.name && newUser.email && newUser.username && newUser.phone) {
-            const id = users.length > 0 ? users[users.length - 1].id + 1 : 1; // Generar un ID único
-            const userToAdd: User = { ...newUser, id }; // Crear usuario con el tipo `User`
-            setUsers([...users, userToAdd]); // Agregar nuevo usuario a la lista local
-            setNewUser({ id: 0, name: '', email: '', username: '', phone: '' }); // Resetear el formulario
+            const id = users.length > 0 ? users[users.length - 1].id + 1 : 1;
+            const userToAdd: User = { ...newUser, id };
+            setUsers([...users, userToAdd]); // Agregar nuevo usuario
+            setNewUser({ id: 0, name: '', email: '', username: '', phone: '' }); // Resetear formulario
             setOpenDialog(false);
         }
     };
@@ -122,8 +137,8 @@ const UserTable: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filteredUsers.length > 0 ? (
-                            filteredUsers.map((user) => (
+                        {visibleUsers.length > 0 ? (
+                            visibleUsers.map((user) => (
                                 <TableRow key={user.id}>
                                     <TableCell>{user.id}</TableCell>
                                     <TableCell>{user.name}</TableCell>
