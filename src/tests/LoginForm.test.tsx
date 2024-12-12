@@ -4,27 +4,27 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import configureStore from 'redux-mock-store';
-import HomePage from '../pages/HomePage';
+import rootReducer from '../redux/reducers.ts'; // Adjust the import according to your project structure
+import LoginForm from '../components/Auth/LoginForm';
 
-const mockStore = configureStore([thunk]);
 const initialState = {
     users: {
         loading: false,
         // Add other necessary initial state properties here
     }
 };
-const store = mockStore(initialState);
 
-test('renders HomePage correctly', () => {
+const store = createStore(rootReducer, initialState, applyMiddleware(thunk));
+
+test('renders LoginForm correctly', () => {
     render(
         <Provider store={store}>
             <Router>
-                <HomePage />
+                <LoginForm />
             </Router>
         </Provider>
     );
 
-    const titleElement = screen.getByText(/User Management/i);
-    expect(titleElement).toBeInTheDocument();
+    const loginButton = screen.getByRole('button', { name: /login/i });
+    expect(loginButton).toBeInTheDocument();
 });
