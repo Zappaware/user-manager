@@ -24,7 +24,7 @@ Vite was chosen for this project because of its fast development server and opti
 ## Installation Instructions
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Zappaware/user-manager.git 
    ```
 
 2. **Navigate to the project directory**:
